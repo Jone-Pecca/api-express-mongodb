@@ -12,6 +12,9 @@ mongoose.connect('mongodb://mongo:27017/mydatabase', { useNewUrlParser: true, us
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.log(err));
 
+const dataRouter = require('./routes/data');
+app.use('/data', dataRouter);
+
 // Routes
 const usersRouter = require('./routes/users');
 app.use('/users', usersRouter);
