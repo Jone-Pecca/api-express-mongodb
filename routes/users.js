@@ -1,17 +1,12 @@
-const express = require('express');
-const router = express.Router();
-const User = require('../models/User');
+import { Router } from 'express';
+const router = Router();
+//import { findOneAndUpdate } from '../models/users.js';
+import * as UserController from '../controllers/users.js'
 
 // Get all users
-router.get('/', async (req, res) => {
-  try {
-    const users = await User.find();
-    res.json(users);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
+router.get('/', UserController.findAll);
 
+/*
 // Get one user
 router.get('/:id', getUser, (req, res) => {
   res.json(res.user);
@@ -19,12 +14,12 @@ router.get('/:id', getUser, (req, res) => {
 
 // Create or update a user (Upsert)
 router.post('/', async (req, res) => {
-  const { name, email } = req.body;
+  const { name, email, url } = req.body;
 
   try {
-    const user = await User.findOneAndUpdate(
+    const user = await findOneAndUpdate(
       { email: email }, // Criteria to find the document
-      { name: name, email: email }, // Data to update
+      { name: name, email: email, url: url }, // Data to update
       { new: true, upsert: true } // Options: return the updated doc and upsert if not found
     );
     res.status(201).json(user);
@@ -34,12 +29,15 @@ router.post('/', async (req, res) => {
 });
 
 // Update a user
-router.put('/:id', getUser, async (req, res) => {
+router.put('/:id', async (req, res) => {
   if (req.body.name != null) {
     res.user.name = req.body.name;
   }
   if (req.body.email != null) {
     res.user.email = req.body.email;
+  }
+  if (req.body.url != null) {
+    res.user.url = req.body.url;
   }
 
   try {
@@ -64,7 +62,7 @@ router.delete('/:id', getUser, async (req, res) => {
 async function getUser(req, res, next) {
   let user;
   try {
-    user = await User.findById(req.params.id);
+    user = await findById(req.params.id);
     if (user == null) {
       return res.status(404).json({ message: 'Cannot find user' });
     }
@@ -76,4 +74,5 @@ async function getUser(req, res, next) {
   next();
 }
 
-module.exports = router;
+*/
+export default router;

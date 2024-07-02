@@ -1,29 +1,25 @@
-// server.js (update with user routes)
-const express = require('express');
-const mongoose = require('mongoose');
+import express from 'express';
+import mongoose from 'mongoose';
+import cors from 'cors';
+import userRouter from './routes/users.js';
+import skuRouter from './routes/skus.js';
+
 const app = express();
-const port = 3000;
+const PORT = 3000;
 
-// Middleware
-app.use(express.json());
+const mongoUrl = process.env.MONGO_URL || 'mongodb://mongo:27017/vtex';
 
-// Connect to MongoDB
-mongoose.connect('mongodb://mongo:27017/mydatabase', { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('MongoDB connected'))
-  .catch(err => console.log(err));
+  .catch(err => console.error('MongoDB connection error:', err));
 
-const dataRouter = require('./routes/data');
-app.use('/data', dataRouter);
+app.use(cors());
+app.use(express.json());
+app.use('/users', userRouter);
+app.use('/skus', skuRouter);
+app.get('/teste',(req,res)=>res.send('ALOALOGALERINHA'))
 
-// Routes
-const usersRouter = require('./routes/users');
-app.use('/users', usersRouter);
 
-// Simple route
-app.get('/', (req, res) => {
-  res.send('Hello World!');
-});
-
-app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
